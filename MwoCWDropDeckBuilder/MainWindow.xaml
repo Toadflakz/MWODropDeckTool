@@ -1,0 +1,90 @@
+﻿<Window x:Class="MwoCWDropDeckBuilder.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:viewModel="clr-namespace:MwoCWDropDeckBuilder.ViewModel"
+        xmlns:views="clr-namespace:MwoCWDropDeckBuilder.Views"
+        Title="MW:O Dropdeck Tool"
+        Width="525"
+        Height="350"
+        Background="{StaticResource BackgroundDarkGreyBrush}"
+        DataContext="{Binding MainWindowViewModel,
+                              RelativeSource={RelativeSource Self}}"
+        Foreground="{StaticResource LightBlueBorderBrush}"
+        Icon="Images/mwo.png"
+        WindowState="Maximized">
+    <Window.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <DataTemplate DataType="{x:Type viewModel:BuildListViewModel}">
+            <views:BuildListView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:DropDeckCreatorViewModel}">
+            <views:DropDeckCreatorView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type viewModel:AboutViewModel}">
+            <views:AboutView />
+        </DataTemplate>
+
+    </Window.Resources>
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Grid>
+        <TabControl Margin="10"
+                    Canvas.ZIndex="1"
+                    ItemsSource="{Binding Tabs,
+                                          Mode=OneWay}"
+                    SelectedIndex="0">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Header, Mode=OneWay}" />
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <ContentControl Content="{Binding}" />
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+        <Grid Canvas.ZIndex="15" Visibility="{Binding IsLoading, Mode=TwoWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Background="Black"
+                    Canvas.ZIndex="10"
+                    Opacity="0.5" />
+            <Border MaxWidth="400"
+                    MaxHeight="250"
+                    Background="{StaticResource BackgroundDarkBlueGradientBrush}"
+                    BorderBrush="{StaticResource GreyBorderBrush}"
+                    BorderThickness="2"
+                    Canvas.ZIndex="11">
+                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+                               FontSize="24"
+                               Text="{Binding BusyMessage}"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap" />
+                    <fa:ImageAwesome Grid.Row="1"
+                                     Width="60"
+                                     Margin="20"
+                                     HorizontalAlignment="Center"
+                                     Foreground="{StaticResource LightBlueBorderBrush}"
+                                     Icon="Spinner"
+                                     Spin="True"
+                                     SpinDuration="1.5" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

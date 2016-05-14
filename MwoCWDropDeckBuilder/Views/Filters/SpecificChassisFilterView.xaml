@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="MwoCWDropDeckBuilder.Views.Filters.SpecificChassisFilterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:filters="clr-namespace:MwoCWDropDeckBuilder.ViewModel.Filters"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Width="Auto"
+             Height="Auto"
+             d:DataContext="{d:DesignInstance filters:SpecificChassisFilterViewModel}"
+             d:DesignHeight="300"
+             d:DesignWidth="400"
+             mc:Ignorable="d">
+    <Grid Height="Auto" Margin="5,3">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <CheckBox Grid.Column="0"
+                  VerticalAlignment="Center"
+                  IsChecked="{Binding IsEnabled,
+                                      Mode=TwoWay,
+                                      UpdateSourceTrigger=PropertyChanged}" />
+        <Label Grid.Column="1"
+               VerticalAlignment="Center"
+               IsEnabled="{Binding IsEnabled,
+                                   Mode=OneWay}">
+            Req. Specific Chassis:
+        </Label>
+        <TextBox Grid.Column="2"
+                 Width="50"
+                 MinHeight="28"
+                 VerticalAlignment="Center"
+                 VerticalContentAlignment="Center"
+                 IsEnabled="{Binding IsEnabled,
+                                     Mode=OneWay}"
+                 Text="{Binding Limit,
+                                Mode=TwoWay,
+                                UpdateSourceTrigger=PropertyChanged,
+                                StringFormat=N0}" />
+        <Label Grid.Column="3">X</Label>
+        <ComboBox Grid.Column="4"
+                  Width="50"
+                  MinHeight="28"
+                  Margin="5,0"
+                  VerticalAlignment="Center"
+                  VerticalContentAlignment="Center"
+                  IsEnabled="{Binding IsEnabled,
+                                      Mode=OneWay}"
+                  ItemsSource="{Binding AllChassis,
+                                        Mode=OneWay}"
+                  SelectedItem="{Binding SelectedChassis,
+                                         Mode=TwoWay,
+                                         UpdateSourceTrigger=PropertyChanged}" />
+
+    </Grid>
+</UserControl>

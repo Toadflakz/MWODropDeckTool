@@ -1,0 +1,22 @@
+﻿<Application x:Class="MwoCWDropDeckBuilder.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:infrastructure="clr-namespace:MwoCWDropDeckBuilder.Infrastructure"
+             Startup="App_OnStartup"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Infrastructure/Resources/Styles/SilverlightErrorTemplate.xaml" />
+                <ResourceDictionary Source="Infrastructure/Resources/Styles/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <infrastructure:EnumConverter x:Key="EnumConverter" />
+
+            <infrastructure:BoolToStringConverter x:Key="ClanISBoolToStringConverter"
+                                                  FalseValue="IS"
+                                                  TrueValue="Clan" />
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

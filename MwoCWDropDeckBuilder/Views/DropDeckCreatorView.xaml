@@ -1,0 +1,270 @@
+﻿<UserControl x:Class="MwoCWDropDeckBuilder.Views.DropDeckCreatorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:extendedColumn="clr-namespace:ExtendedGrid.ExtendedColumn;assembly=ExtendedGrid"
+             xmlns:extendedGridControl="clr-namespace:ExtendedGrid.ExtendedGridControl;assembly=ExtendedGrid"
+             xmlns:filtersV="clr-namespace:MwoCWDropDeckBuilder.Views.Filters"
+             xmlns:filtersVM="clr-namespace:MwoCWDropDeckBuilder.ViewModel.Filters"
+             xmlns:infrastructure="clr-namespace:MwoCWDropDeckBuilder.Infrastructure"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:model="clr-namespace:MwoCWDropDeckBuilder.Model"
+             xmlns:mwoCwDropDeckBuilder="clr-namespace:MwoCWDropDeckBuilder"
+             xmlns:viewModel="clr-namespace:MwoCWDropDeckBuilder.ViewModel"
+             x:Name="DropDeckCreatorViewRoot"
+             d:DataContext="{d:DesignInstance viewModel:DropDeckCreatorViewModel}"
+             d:DesignHeight="600"
+             d:DesignWidth="800"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+
+        <DataTemplate DataType="{x:Type filtersVM:DuplicateChassisFilterViewModel}">
+            <filtersV:MaxDuplicateChassisFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:ClanDuplicateChassisFilterViewModel}">
+            <filtersV:ClanDuplicateChassisFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:TechTypeFilterViewModel}">
+            <filtersV:TechTypeFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:DropdeckWeightRangeFilterViewModel}">
+            <filtersV:DropdeckWeightRangeFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:BuildEffectiveRangeRangeFilterViewModel}">
+            <filtersV:DropdeckEffectiveRangeRangeFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:AssaultChassisTypeFilterViewModel}">
+            <filtersV:AssaultChassisTypeFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:HeavyChassisTypeFilterViewModel}">
+            <filtersV:HeavyChassisTypeFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:MediumChassisTypeFilterViewModel}">
+            <filtersV:MediumChassisTypeFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:LightChassisTypeFilterViewModel}">
+            <filtersV:LightChassisTypeFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:MaxEcmChassisFilterViewModel}">
+            <filtersV:MaxEcmChassisFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:MinEcmChassisFilterViewModel}">
+            <filtersV:MinEcmChassisFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:ClanChassisFilterViewModel}">
+            <filtersV:ClanChassisFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:SpecificChassisFilterViewModel}">
+            <filtersV:SpecificChassisFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:MinHeatEfficiencyFilterViewModel}">
+            <filtersV:MinHeatEfficiencyFilterView />
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type filtersVM:MaxDuplicateBuildFilterViewModel}">
+            <filtersV:MaxDuplicateBuildFilterView />
+        </DataTemplate>
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+
+
+        <GroupBox Grid.Row="0" Header="Filters">
+            <ItemsControl ItemsSource="{Binding Filters, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding .}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </GroupBox>
+
+        <Grid Grid.Row="1">
+            <StackPanel Margin="10"
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal">
+                <Label VerticalAlignment="Center">Deck Type:</Label>
+                <ComboBox MinWidth="100"
+                          Margin="0,0,20,0"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding DropDeckTypes}"
+                          SelectedItem="{Binding DropDeckType,
+                                                 Mode=TwoWay,
+                                                 UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ., Converter={StaticResource EnumConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Button MinWidth="200"
+                        MinHeight="28"
+                        Margin="5,0"
+                        Command="{Binding CreateDropDecksFromBuildsCommand}">
+                    Create Drop Deck Combinations...
+                </Button>
+                <Button MinWidth="120"
+                        MinHeight="28"
+                        Margin="5,0"
+                        Command="{Binding ExportToExcelCommand}"
+                        CommandParameter="{Binding ElementName=ExtendedDataGrid}">
+                    Export to Excel...
+                </Button>
+                <Button MinWidth="120"
+                        MinHeight="28"
+                        Margin="5,0"
+                        Command="{Binding ExportToCSVCommand}"
+                        CommandParameter="{Binding ElementName=ExtendedDataGrid}">
+                    Export to CSV...
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <extendedGridControl:ExtendedDataGrid x:Name="ExtendedDataGrid"
+                                              Grid.Row="2"
+                                              AutoGenerateColumns="False"
+                                              CanUserAddRows="False"
+                                              CanUserDeleteRows="False"
+                                              EnableColumnVirtualization="True"
+                                              EnableRowVirtualization="True"
+                                              HideColumnChooser="False"
+                                              IsReadOnly="True"
+                                              ItemsSource="{Binding DropDecks,
+                                                                    Mode=OneWay}"
+                                              RowDetailsVisibilityMode="VisibleWhenSelected"
+                                              SearchAutoFilterVisibility="Visible"
+                                              ShowSortOrder="True">
+            <extendedGridControl:ExtendedDataGrid.Columns>
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding Tonnage}"
+                                                           Header="Tonnage"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding AverageSusDps,
+                                                                             StringFormat=N2}"
+                                                           Header="Avg. Sus. DPS"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding AverageMaxDps,
+                                                                             StringFormat=N2}"
+                                                           Header="Avg. Max. DPS"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding AverageFirepower,
+                                                                             StringFormat=N0}"
+                                                           Header="Avg. Firepower"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding AverageHeatEfficiency,
+                                                                             StringFormat=P0}"
+                                                           Header="Avg. Heat Eff."
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding AverageRange,
+                                                                             StringFormat=N0}"
+                                                           Header="Avg. Eff. Range"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding AverageSpeed,
+                                                                             StringFormat=N0}"
+                                                           Header="Avg. Speed"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+
+
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding ECMChassis,
+                                                                             StringFormat=N0}"
+                                                           Header="ECM"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+
+                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Binding="{Binding MechSummary}"
+                                                           Header="Summary of Mechs"
+                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+            </extendedGridControl:ExtendedDataGrid.Columns>
+            <extendedGridControl:ExtendedDataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ItemsControl Grid.Column="0" ItemsSource="{Binding Mechs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="4*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Label Grid.Column="0"
+                                               Content="{Binding MechName}"
+                                               Foreground="White"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                        <Label Grid.Column="1"
+                                               Content="{Binding WeaponSummary}"
+                                               Foreground="White"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                        <Label Grid.Column="2"
+                                               Content="{Binding Mech.Type}"
+                                               Foreground="White"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                        <Label Grid.Column="3"
+                                               Content="{Binding MechTonnage}"
+                                               Foreground="White"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                        <Label Grid.Column="4"
+                                               Content="{Binding Url}"
+                                               Foreground="White"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                        </ItemsControl>
+                        <Button Grid.Column="1"
+                                MinWidth="120"
+                                MinHeight="28"
+                                Margin="10"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource BackgroundDarkBlueGradientBrush}"
+                                Command="{Binding DataContext.CopyDetailsCommand,
+                                                  ElementName=DropDeckCreatorViewRoot}"
+                                CommandParameter="{Binding .}">
+                            Copy details...
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </extendedGridControl:ExtendedDataGrid.RowDetailsTemplate>
+        </extendedGridControl:ExtendedDataGrid>
+    </Grid>
+</UserControl>

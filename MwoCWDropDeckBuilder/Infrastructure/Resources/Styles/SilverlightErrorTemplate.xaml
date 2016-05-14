@@ -1,0 +1,88 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:behaviors="clr-namespace:MwoCWDropDeckBuilder.Infrastructure.Resources.Behaviors"
+                    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity">
+
+    <ControlTemplate x:Key="ErrorTemplateSilverlightStyle">
+        <StackPanel Orientation="Horizontal">
+            <!--  Defines TextBox outline border and the ToolTipCorner  -->
+            <Border x:Name="border"
+                    BorderBrush="#FFDC000C"
+                    BorderThickness="1.25">
+                <Grid>
+                    <Polygon x:Name="toolTipCorner"
+                             Margin="-1"
+                             HorizontalAlignment="Right"
+                             VerticalAlignment="Top"
+                             Fill="#FFDC000C"
+                             Grid.ZIndex="2"
+                             IsHitTestVisible="True"
+                             Points="9,9 9,0 0,0" />
+                    <Polyline Margin="-1"
+                              HorizontalAlignment="Right"
+                              VerticalAlignment="Top"
+                              Grid.ZIndex="3"
+                              IsHitTestVisible="True"
+                              Points="10,10 0,0"
+                              Stroke="White"
+                              StrokeEndLineCap="Round"
+                              StrokeStartLineCap="Round"
+                              StrokeThickness="1.5" />
+                    <AdornedElementPlaceholder x:Name="adorner" />
+                </Grid>
+            </Border>
+            <!--  Defines the Popup  -->
+            <Popup x:Name="placard"
+                   AllowsTransparency="True"
+                   Placement="Top"
+                   PlacementRectangle="10,-1,0,0"
+                   PlacementTarget="{Binding ElementName=toolTipCorner}"
+                   PopupAnimation="Fade">
+                <!--  Used to reposition Popup when dialog moves or resizes  -->
+                <i:Interaction.Behaviors>
+                    <behaviors:RepositionPopupBehavior />
+                </i:Interaction.Behaviors>
+                <Popup.Style>
+                    <Style TargetType="{x:Type Popup}">
+                        <Style.Triggers>
+                            <!--  Shows Popup when TextBox has focus  -->
+                            <DataTrigger Binding="{Binding ElementName=adorner, Path=AdornedElement.IsFocused}" Value="True">
+                                <Setter Property="IsOpen" Value="True" />
+                            </DataTrigger>
+                            <!--  Shows Popup when mouse hovers over ToolTipCorner  -->
+                            <DataTrigger Binding="{Binding ElementName=toolTipCorner, Path=IsMouseOver}" Value="True">
+                                <Setter Property="IsOpen" Value="True" />
+                            </DataTrigger>
+                            <!--  Hides Popup when window is no longer active  -->
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=IsActive}" Value="False">
+                                <Setter Property="IsOpen" Value="False" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Popup.Style>
+                <Border x:Name="errorBorder"
+                        MinHeight="24"
+                        MaxWidth="267"
+                        Margin="0,0,8,8"
+                        Background="#FFDC000C"
+                        CornerRadius="4"
+                        IsHitTestVisible="False"
+                        Opacity="1">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="4"
+                                          Direction="315"
+                                          Opacity="0.6"
+                                          ShadowDepth="4"
+                                          Color="Black" />
+                    </Border.Effect>
+                    <TextBlock Margin="8,3,8,3"
+                               Foreground="White"
+                               Text="{Binding ElementName=adorner,
+                                              Path=AdornedElement.(Validation.Errors).CurrentItem.ErrorContent}"
+                               TextWrapping="Wrap" />
+                </Border>
+            </Popup>
+        </StackPanel>
+    </ControlTemplate>
+
+</ResourceDictionary>

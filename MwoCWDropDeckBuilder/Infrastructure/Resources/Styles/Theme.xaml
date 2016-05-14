@@ -1,0 +1,79 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ThemeColours.xaml" />
+        <ResourceDictionary Source="Button.xaml" />
+        <ResourceDictionary Source="ComboBox.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type GroupBox}">
+        <Setter Property="Foreground" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock FontWeight="Bold" Text="{Binding .}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type CheckBox}">
+        <Setter Property="Foreground" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueBorderBrush}" />
+    </Style>
+
+    <Style TargetType="{x:Type Label}">
+        <Setter Property="Foreground" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueBorderBrush}" />
+    </Style>
+
+    <Style TargetType="{x:Type TextBox}">
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="Background" Value="{StaticResource BackgroundAltDarkGreyBrush}" />
+        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplateSilverlightStyle}" />
+    </Style>
+
+    <Style TargetType="{x:Type TabItem}">
+        <Setter Property="Foreground" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TabItem}">
+                    <Grid>
+                        <Border Name="Border"
+                                Margin="0,0,-4,0"
+                                Background="{StaticResource BackgroundDarkBlueGradientBrush}"
+                                BorderBrush="{StaticResource LightBlueBorderBrush}"
+                                BorderThickness="1,1,1,1"
+                                CornerRadius="2,12,0,0">
+                            <ContentPresenter x:Name="ContentSite"
+                                              Margin="12,2,12,2"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              ContentSource="Header"
+                                              RecognizesAccessKey="True" />
+                        </Border>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Panel.ZIndex" Value="100" />
+                            <Setter TargetName="Border" Property="Background" Value="{StaticResource BackgroundAltDarkGreyBrush}" />
+                            <Setter TargetName="Border" Property="BorderThickness" Value="1,1,1,0" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type TabControl}">
+        <Setter Property="Foreground" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource LightBlueBorderBrush}" />
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkBlueGradientBrush}" />
+    </Style>
+
+    <Style TargetType="{x:Type TabPanel}">
+        <Setter Property="Background" Value="{StaticResource BackgroundDarkBlueGradientBrush}" />
+    </Style>
+</ResourceDictionary>
