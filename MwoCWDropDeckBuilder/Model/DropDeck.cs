@@ -37,32 +37,67 @@ namespace MwoCWDropDeckBuilder.Model
 
         public decimal AverageSusDps
         {
-            get { return Mechs.Average(x => x.SusDps); }
+            get { return Math.Round(Mechs.Average(x => x.SusDps),0); }
+        }
+
+        public decimal DeltaSusDps
+        {
+            get { return Math.Round(Mechs.Max(x => x.SusDps) - Mechs.Min(x => x.SusDps),0); }
         }
 
         public decimal AverageMaxDps
         {
-            get { return Mechs.Average(x => x.MaxDps); }
+            get { return Math.Round(Mechs.Average(x => x.MaxDps),0); }
+        }
+
+        public decimal DeltaMaxDps
+        {
+            get { return Math.Round(Mechs.Max(x => x.MaxDps) - Mechs.Min(x => x.MaxDps),0);}
+        }
+
+        public decimal TotalFirepower
+        {
+            get { return Mechs.Sum(x => x.Firepower); }
         }
 
         public decimal AverageFirepower
         {
-            get { return Mechs.Average(x => x.Firepower); }
+            get { return Math.Round(Mechs.Average(x => x.Firepower),0); }
+        }
+
+        public decimal DeltaFirepower
+        {
+            get { return Mechs.Max(x => x.Firepower) - Mechs.Min(x => x.Firepower);}
         }
 
         public decimal AverageHeatEfficiency
         {
-            get { return Mechs.Average(x => x.HeatEfficiency); }
+            get { return Math.Round(Mechs.Average(x => x.HeatEfficiency),0); }
         }
 
-        public decimal AverageRange
+        public decimal DeltaHeatEfficiency
         {
-            get { return Mechs.Average(x => x.EffectiveRange); }
+            get { return Math.Round(Mechs.Max(x => x.HeatEfficiency) - Mechs.Min(x => x.HeatEfficiency),0);}
+        }
+
+        public decimal AverageRangeExclLights
+        {
+            get { return Math.Round(Mechs.Where(x => x.Mech.Type != "Light").Average(x => x.EffectiveRange),0); }
+        }
+
+        public decimal DeltaRangeExclLights
+        {
+            get { return Math.Round(Mechs.Where(x => x.Mech.Type != "Light").Max(x => x.EffectiveRange) - Mechs.Where(x => x.Mech.Type != "Light").Min(x => x.EffectiveRange),0); }
         }
 
         public decimal AverageSpeed
         {
-            get { return Mechs.Average(x => x.TopSpeed); }
+            get { return Math.Round(Mechs.Average(x => x.TopSpeed),0); }
+        }
+
+        public decimal DeltaSpeedExclLights
+        {
+            get { return Math.Round(Mechs.Where(x => x.Mech.Type != "Light").Max(x => x.TopSpeed) - Mechs.Where(x => x.Mech.Type != "Light").Min(x => x.TopSpeed),0); }
         }
 
         public int ECMChassis

@@ -10,6 +10,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:mwoCwDropDeckBuilder="clr-namespace:MwoCWDropDeckBuilder"
              xmlns:viewModel="clr-namespace:MwoCWDropDeckBuilder.ViewModel"
+             x:Name="BuildListRoot"
              d:DataContext="{d:DesignInstance viewModel:BuildListViewModel}"
              d:DesignHeight="600"
              d:DesignWidth="800"
@@ -17,7 +18,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <GroupBox Grid.Row="0"
                   Margin="5"
@@ -34,6 +37,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
+                        <RowDefinition />
                         <RowDefinition />
                         <RowDefinition />
                     </Grid.RowDefinitions>
@@ -86,6 +90,31 @@
                                             ValidatesOnExceptions=True,
                                             NotifyOnValidationError=True}" />
 
+                    <CheckBox Grid.Row="2"
+                              Grid.Column="0"
+                              Margin="5,3"
+                              VerticalAlignment="Center"
+                              IsChecked="{Binding UseMetaMechsMetaTierListAsSource,
+                                                  Mode=TwoWay,
+                                                  UpdateSourceTrigger=PropertyChanged}">
+                        Load MetaMechs Meta Tier Lists :
+                    </CheckBox>
+                    <ComboBox Grid.Row="2"
+                              Grid.Column="1"
+                              Width="Auto"
+                              Margin="5,3"
+                              ItemsSource="{Binding MetaMechsMetaTiers,
+                                                    Mode=OneWay}"
+                              SelectedItem="{Binding SelectedMetaMechsMetaTier,
+                                                     Mode=TwoWay,
+                                                     UpdateSourceTrigger=PropertyChanged}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource MetaMechsMetaTierEnumToStringConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
                 </Grid>
                 <StackPanel Grid.Row="1" Orientation="Horizontal">
                     <Button Width="100"
@@ -94,46 +123,60 @@
                             Command="{Binding LoadBuildsCommand}">
                         Load Builds...
                     </Button>
-                    <StackPanel Margin="5,0" Orientation="Horizontal">
-                        <Label VerticalAlignment="Center">Map Type:</Label>
-                        <ComboBox MinWidth="100"
-                                  MaxHeight="28"
-                                  VerticalAlignment="Center"
-                                  ItemsSource="{Binding MapTypes,
-                                                        Mode=OneWay}"
-                                  SelectedItem="{Binding SelectedLevelType,
-                                                         Mode=TwoWay,
-                                                         UpdateSourceTrigger=PropertyChanged}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding ., Converter={StaticResource EnumConverter}}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                    </StackPanel>
-                    <StackPanel Margin="5,0" Orientation="Horizontal">
-                        <Label VerticalAlignment="Center">Map:</Label>
-                        <ComboBox MinWidth="100"
-                                  MaxHeight="28"
-                                  VerticalAlignment="Center"
-                                  ItemsSource="{Binding Maps,
-                                                        Mode=OneWay}"
-                                  SelectedItem="{Binding SelectedMap,
-                                                         Mode=TwoWay,
-                                                         UpdateSourceTrigger=PropertyChanged}">
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Name}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
+
+                    <StackPanel Margin="20,0" Orientation="Horizontal">
+                        <Button Width="120"
+                                MinHeight="28"
+                                Margin="10"
+                                Command="{Binding ClearLoadedBuildsCommand}">
+                            Clear Loaded Builds
+                        </Button>
                     </StackPanel>
                 </StackPanel>
             </Grid>
         </GroupBox>
 
+        <GroupBox Grid.Row="1" Header="Build Calculation Parameters">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Margin="5,0" Orientation="Horizontal">
+                    <Label VerticalAlignment="Center">Map Type:</Label>
+                    <ComboBox MinWidth="100"
+                              MaxHeight="28"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding MapTypes,
+                                                    Mode=OneWay}"
+                              SelectedItem="{Binding SelectedLevelType,
+                                                     Mode=TwoWay,
+                                                     UpdateSourceTrigger=PropertyChanged}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ., Converter={StaticResource EnumConverter}}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel Margin="5,0" Orientation="Horizontal">
+                    <Label VerticalAlignment="Center">Map:</Label>
+                    <ComboBox MinWidth="100"
+                              MaxHeight="28"
+                              VerticalAlignment="Center"
+                              ItemsSource="{Binding Maps,
+                                                    Mode=OneWay}"
+                              SelectedItem="{Binding SelectedMap,
+                                                     Mode=TwoWay,
+                                                     UpdateSourceTrigger=PropertyChanged}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
         <extendedGridControl:ExtendedDataGrid x:Name="BuildExtendedGrid"
-                                              Grid.Row="1"
+                                              Grid.Row="2"
                                               AutoGenerateColumns="False"
                                               CanUserAddRows="False"
                                               CanUserDeleteRows="False"
@@ -146,7 +189,7 @@
                                               VirtualizingPanel.VirtualizationMode="Recycling">
             <extendedGridControl:ExtendedDataGrid.Columns>
 
-                <emwc:DataGridTemplateColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}">
+                <emwc:DataGridTemplateColumn Width="50" d:DataContext="{d:DesignInstance viewModel:BuildViewModel}">
                     <emwc:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <CheckBox HorizontalAlignment="Center"
@@ -158,95 +201,110 @@
                     </emwc:DataGridTemplateColumn.CellTemplate>
                 </emwc:DataGridTemplateColumn>
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding Url}"
                                                            Header="URL"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           IsReadOnly="True" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding MechName}"
                                                            Header="Name"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
+                                                           IsReadOnly="True" />
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding WeaponSummary}"
                                                            Header="Summary"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
+                                                           IsReadOnly="True" />
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding IsClan,
                                                                              Converter={StaticResource ClanISBoolToStringConverter}}"
                                                            Header="Clan/IS"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
+                                                           IsReadOnly="True" />
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding Type}"
                                                            Header="Chassis Type"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
+                                                           IsReadOnly="True" />
 
-                <extendedColumn:ExtendedDataGridCheckBoxColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridCheckBoxColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                               AllowAutoFilter="True"
                                                                Binding="{Binding IsECM,
                                                                                  Mode=OneWay}"
                                                                Header="ECM ?"
-                                                               IsReadOnly="True"
-                                                               d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
+                                                               IsReadOnly="True" />
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding MechTonnage}"
                                                            Header="Tonnage"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           IsReadOnly="True" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding MaxDps,
                                                                              StringFormat=N2}"
                                                            Header="Max. DPS"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           IsReadOnly="True" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding SusDps,
                                                                              StringFormat=N2}"
                                                            Header="Sus. DPS"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           IsReadOnly="True" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding Firepower,
                                                                              StringFormat=N2}"
                                                            Header="Firepower"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           IsReadOnly="True" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding HeatEfficiency,
                                                                              StringFormat='P0'}"
                                                            Header="Heat Eff."
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
+                                                           IsReadOnly="True" />
 
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding EffectiveRange,
                                                                              StringFormat=N0}"
                                                            Header="Eff. Range"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           IsReadOnly="True" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding TopSpeed,
                                                                              StringFormat=N0}"
                                                            Header="Speed"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
-                                                           Binding="{Binding HasXL}"
+                                                           IsReadOnly="True" />
+                <extendedColumn:ExtendedDataGridCheckBoxColumn d:DataContext="{d:DesignInstance viewModel:BuildViewModel}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding HasXL, Mode=OneWay}"
                                                            Header="XL ?"
-                                                           IsReadOnly="True"
-                                                           d:DataContext="{d:DesignInstance viewModel:BuildViewModel}" />
+                                                           IsReadOnly="True" />
 
 
 
             </extendedGridControl:ExtendedDataGrid.Columns>
         </extendedGridControl:ExtendedDataGrid>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button Width="70"
+                    MinHeight="28"
+                    Margin="10"
+                    Command="{Binding SelectAllCommand}">
+                Select All
+            </Button>
+            <Button Width="80"
+                    MinHeight="28"
+                    Margin="10"
+                    Command="{Binding UnselectAllCommand}">
+                Unselect All
+            </Button>
+        </StackPanel>
     </Grid>
 </UserControl>

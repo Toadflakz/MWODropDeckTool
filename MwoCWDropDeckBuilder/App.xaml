@@ -16,6 +16,7 @@
             <infrastructure:BoolToStringConverter x:Key="ClanISBoolToStringConverter"
                                                   FalseValue="IS"
                                                   TrueValue="Clan" />
+            <infrastructure:MetaMechsMetaTierEnumToStringConverter x:Key="MetaMechsMetaTierEnumToStringConverter" />
 
         </ResourceDictionary>
     </Application.Resources>

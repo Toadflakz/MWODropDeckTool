@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using MwoCWDropDeckBuilder.Model;
-using Newtonsoft.Json.Serialization;
 
 namespace MwoCWDropDeckBuilder.ViewModel.Filters
 {

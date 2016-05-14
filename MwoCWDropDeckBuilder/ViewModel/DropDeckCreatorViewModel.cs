@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +16,6 @@ using MwoCWDropDeckBuilder.Infrastructure;
 using MwoCWDropDeckBuilder.Infrastructure.Interfaces;
 using MwoCWDropDeckBuilder.Model;
 using MwoCWDropDeckBuilder.Services.Interfaces;
-using MwoCWDropDeckBuilder.ViewModel.Filters;
-
-
 using Helper = MwoCWDropDeckBuilder.Infrastructure.Helper;
 
 namespace MwoCWDropDeckBuilder.ViewModel
@@ -95,8 +89,8 @@ namespace MwoCWDropDeckBuilder.ViewModel
         {
             StringBuilder sb = new StringBuilder();
             //Main line details
-            sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}{9}", "Tonnage", "Avg Sus. Dps", "Avg Max Dps", "Avg. Firepower", "Avg Heat Eff.", "Avg Eff. Range", "Avg. Speed", "No. ECM Chassis", "MechSummary", Environment.NewLine);
-            sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}{9}", item.Tonnage.ToString("N0"), item.AverageSusDps.ToString("N2"), item.AverageMaxDps.ToString("N2"), item.AverageFirepower.ToString("N0"), item.AverageHeatEfficiency.ToString("P0"), item.AverageRange.ToString("N0"), item.AverageSpeed.ToString("N0"), item.ECMChassis, item.MechSummary, Environment.NewLine);
+            sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}{9}", "Tonnage", "Avg Sus. Dps", "Avg Max Dps", "Avg. Firepower", "Avg Heat Eff.", "Avg Eff. Range (excl Lights)", "Avg. Speed", "No. ECM Chassis", "MechSummary", Environment.NewLine);
+            sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}{9}", item.Tonnage.ToString("N0"), item.AverageSusDps.ToString("N2"), item.AverageMaxDps.ToString("N2"), item.AverageFirepower.ToString("N0"), item.AverageHeatEfficiency.ToString("P0"), item.AverageRangeExclLights.ToString("N0"), item.AverageSpeed.ToString("N0"), item.ECMChassis, item.MechSummary, Environment.NewLine);
 
             sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}{5}","Name", "Weapon Summary", "Chassis Type","Tonnage", "Smurfy URL", Environment.NewLine);
             item.Mechs.ForEach(

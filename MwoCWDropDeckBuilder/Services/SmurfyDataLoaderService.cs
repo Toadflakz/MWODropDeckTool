@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
-using System.Windows.Documents;
 using MwoCWDropDeckBuilder.Model;
 using MwoCWDropDeckBuilder.Services.Interfaces;
 using Newtonsoft.Json.Linq;
@@ -21,10 +20,12 @@ namespace MwoCWDropDeckBuilder.Services
         private BlockingCollection<SmurfyBuild> _buildsCache;
         private BlockingCollection<SmurfyMech> _mechsCache;
         private BlockingCollection<SmurfyWeapon> _weaponsCache;
+        private IMetaMechsDataLoaderService _metaMechsDataLoaderService;
 
-        public SmurfyDataLoaderService(IMwoSmurfyRestServiceClient restClient)
+        public SmurfyDataLoaderService(IMwoSmurfyRestServiceClient restClient, IMetaMechsDataLoaderService metaMechsDataLoaderService)
         {
             _restClient = restClient;
+            _metaMechsDataLoaderService = metaMechsDataLoaderService;
             _buildsCache = new BlockingCollection<SmurfyBuild>();
             _mechsCache = new BlockingCollection<SmurfyMech>();
             _weaponsCache = new BlockingCollection<SmurfyWeapon>();
@@ -90,61 +91,7 @@ namespace MwoCWDropDeckBuilder.Services
             {
                 var buildUrls = GetBuildUrlsFromTextFile(path);
 
-                var buildUrlTransformBlock = new TransformBlock<string, dynamic>(buildUrl =>
-                {
-                    var urlParts = buildUrl.Split(new char[] { '#' });
-                    var queryString = HttpUtility.ParseQueryString(urlParts.Last());
-                    var mechId = queryString["i"];
-                    var loadoutId = queryString["l"];
-
-                    dynamic buildUrlReturnValue = new ExpandoObject();
-                    buildUrlReturnValue.mechId = mechId;
-                    buildUrlReturnValue.loadoutId = loadoutId;
-                    buildUrlReturnValue.buildUrl = buildUrl;
-                    return buildUrlReturnValue;
-
-                },new ExecutionDataflowBlockOptions()
-                {
-                    MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded
-                });
-                var restCallBlock = new TransformBlock<dynamic, dynamic>(async buildParams =>
-                {
-                    dynamic restReturnValue = new ExpandoObject();
-                    restReturnValue.buildObject = await _restClient.GetLoadoutByMechIdAndLoadoutId(buildParams.mechId, buildParams.loadoutId);
-                    restReturnValue.buildUrl = buildParams.buildUrl;
-                    return restReturnValue;
-                    ;
-                },new ExecutionDataflowBlockOptions()
-                {
-                    MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded
-                });
-                var storageBlock = new ActionBlock<dynamic>(build =>
-                {
-                    var buildObject = SmurfyBuild.GetObject(build.buildObject);
-                    buildObject.Url = build.buildUrl;
-                    buildObject.Mech = _mechsCache.Where(x => x.Id == buildObject.MechId).DefaultIfEmpty(null).Single();
-                    buildObject.WeaponSummary = GetWeaponSummary(build.buildObject);
-                    buildObject.Weapons = GetWeapons(build.buildObject);
-                    buildObject.PerformCalculations();
-                    _buildsCache.Add(buildObject);
-                }, new ExecutionDataflowBlockOptions()
-                {
-                    MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded
-                });
-
-                buildUrlTransformBlock.LinkTo(restCallBlock, new DataflowLinkOptions
-                {
-                    PropagateCompletion = true
-                });
-                restCallBlock.LinkTo(storageBlock, new DataflowLinkOptions
-                {
-                    PropagateCompletion = true
-                });
-
-                foreach (var buildUrl in buildUrls)
-                    buildUrlTransformBlock.Post(buildUrl);
-                buildUrlTransformBlock.Complete();
-                await storageBlock.Completion;
+                return await LoadBuildsFromSmurfyUrlListAsync(buildUrls);
 
             }
             catch (Exception e)
@@ -159,6 +106,7 @@ namespace MwoCWDropDeckBuilder.Services
             var returnValue = true;
             try
             {
+                var cachedUrls = _buildsCache.Select(x => x.Url).ToList();
 
                 var mechBay = await _restClient.GetMechBay(smurfyApiKey);
                 var builds = mechBay.ToObject<Dictionary<string, JObject>>().Values.Select(x => x["loadout"].ToObject<JObject>()).ToList();
@@ -170,7 +118,8 @@ namespace MwoCWDropDeckBuilder.Services
                     buildObject.WeaponSummary = GetWeaponSummary(build);
                     buildObject.Weapons = GetWeapons(build);
                     buildObject.PerformCalculations();
-                    _buildsCache.Add(buildObject);
+                    if (cachedUrls.Contains(buildObject.Url) == false)
+                        _buildsCache.Add(buildObject);
                 }
 
             }
@@ -239,5 +188,93 @@ namespace MwoCWDropDeckBuilder.Services
             return _mechsCache.Select(x => x.Chassis).Distinct().OrderBy(x => x).ToList();
         }
 
+        public async Task<bool> LoadBuildsFromMetaMechsMetaTierListAsync(MetaMechsMetaTier metaMechsMetaTier)
+        {
+            var returnValue = true;
+            try
+            {
+                var buildUrls = await _metaMechsDataLoaderService.GetMetaMechsMetaTierList(metaMechsMetaTier);
+
+                returnValue = await LoadBuildsFromSmurfyUrlListAsync(buildUrls);
+            }
+            catch (Exception)
+            {
+                returnValue = false;
+            }
+            return returnValue;
+        }
+
+        private async Task<bool> LoadBuildsFromSmurfyUrlListAsync(List<string> smurfyLinksList)
+        {
+            var returnValue = true;
+            try
+            {
+                var cachedUrls = _buildsCache.Select(x => x.Url);
+
+                var buildUrls = smurfyLinksList.Except(cachedUrls);
+
+                var buildUrlTransformBlock = new TransformBlock<string, dynamic>(buildUrl =>
+                {
+                    var urlParts = buildUrl.Split(new char[] { '#' });
+                    var queryString = HttpUtility.ParseQueryString(urlParts.Last());
+                    var mechId = queryString["i"];
+                    var loadoutId = queryString["l"];
+
+                    dynamic buildUrlReturnValue = new ExpandoObject();
+                    buildUrlReturnValue.mechId = mechId;
+                    buildUrlReturnValue.loadoutId = loadoutId;
+                    buildUrlReturnValue.buildUrl = buildUrl;
+                    return buildUrlReturnValue;
+
+                }, new ExecutionDataflowBlockOptions()
+                {
+                    MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded
+                });
+                var restCallBlock = new TransformBlock<dynamic, dynamic>(async buildParams =>
+                {
+                    dynamic restReturnValue = new ExpandoObject();
+                    restReturnValue.buildObject = await _restClient.GetLoadoutByMechIdAndLoadoutId(buildParams.mechId, buildParams.loadoutId);
+                    restReturnValue.buildUrl = buildParams.buildUrl;
+                    return restReturnValue;
+                    ;
+                }, new ExecutionDataflowBlockOptions()
+                {
+                    MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded
+                });
+                var storageBlock = new ActionBlock<dynamic>(build =>
+                {
+                    var buildObject = SmurfyBuild.GetObject(build.buildObject);
+                    buildObject.Url = build.buildUrl;
+                    buildObject.Mech = _mechsCache.Where(x => x.Id == buildObject.MechId).DefaultIfEmpty(null).Single();
+                    buildObject.WeaponSummary = GetWeaponSummary(build.buildObject);
+                    buildObject.Weapons = GetWeapons(build.buildObject);
+                    buildObject.PerformCalculations();
+                    _buildsCache.Add(buildObject);
+                }, new ExecutionDataflowBlockOptions()
+                {
+                    MaxDegreeOfParallelism = DataflowBlockOptions.Unbounded
+                });
+
+                buildUrlTransformBlock.LinkTo(restCallBlock, new DataflowLinkOptions
+                {
+                    PropagateCompletion = true
+                });
+                restCallBlock.LinkTo(storageBlock, new DataflowLinkOptions
+                {
+                    PropagateCompletion = true
+                });
+
+                foreach (var buildUrl in buildUrls)
+                    buildUrlTransformBlock.Post(buildUrl);
+                buildUrlTransformBlock.Complete();
+                await storageBlock.Completion;
+
+            }
+            catch (Exception e)
+            {
+                returnValue = false;
+            }
+            return returnValue;
+        }
     }
 }

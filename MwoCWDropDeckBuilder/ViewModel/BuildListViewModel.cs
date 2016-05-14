@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -116,18 +117,76 @@ namespace MwoCWDropDeckBuilder.ViewModel
                 OnPropertyChanged(() => this.SmurfyApiKey);
             }
         }
-        
+
+        private bool _useMetaMechsMetaTierListAsSource;
+        public bool UseMetaMechsMetaTierListAsSource
+        {
+            get { return _useMetaMechsMetaTierListAsSource; }
+            set
+            {
+                _useMetaMechsMetaTierListAsSource = value;
+                OnPropertyChanged(() => this.UseMetaMechsMetaTierListAsSource);
+            }
+        }
+
+        private MetaMechsMetaTier _selectedMechsMetaTier;
+        public MetaMechsMetaTier SelectedMetaMechsMetaTier
+        {
+            get { return _selectedMechsMetaTier; }
+            set
+            {
+                _selectedMechsMetaTier = value;
+                OnPropertyChanged(() => this.SelectedMetaMechsMetaTier);
+            }
+        }
+
+        private ObservableCollection<MetaMechsMetaTier> _metaMechsMetaTiers;
+        public ObservableCollection<MetaMechsMetaTier> MetaMechsMetaTiers
+        {
+            get
+            {
+                return _metaMechsMetaTiers ??
+                       new ObservableCollection<MetaMechsMetaTier>(
+                           Enum.GetValues(typeof (MetaMechsMetaTier)).Cast<MetaMechsMetaTier>());
+            }
+        }
+
+        private bool? _selectAllBuilds;
+        public bool? SelectAllBuilds
+        {
+            get { return _selectAllBuilds; }
+            set
+            {
+                _selectAllBuilds = value;
+                ListenToNotifications = false;
+                if (value.HasValue)
+                    Builds.ToList().ForEach(x => x.IsSelected = value.Value);
+                ListenToNotifications = true;
+                OnPropertyChanged(() => this.SelectAllBuilds);
+
+            }
+        }
+
+        public ICommand ClearLoadedBuildsCommand { get; private set; }
         public ICommand LoadBuildsCommand { get; private set; }
         public ICommand LoadedCommand { get; private set; }
         public ICommand BrowseImportFileCommand { get; private set; }
+        public ICommand SelectAllCommand { get; private set; }
+        public ICommand UnselectAllCommand { get; private set; }
+
+        public bool ListenToNotifications { get; private set; }
 
         public BuildListViewModel(ISmurfyDataLoaderService smurfyDataLoaderService)
         {
             _smurfyDataLoaderService = smurfyDataLoaderService;
             LoadBuildsCommand = new DelegateCommand(ExecuteLoadBuildsCommand, CanExecuteLoadBuildsCommand);
+            SelectAllCommand = new DelegateCommand(() => Builds.ToList().ForEach(x => x.IsSelected = true), () => Builds.Any(x => !x.IsSelected));
+            UnselectAllCommand = new DelegateCommand(() => Builds.ToList().ForEach(x => x.IsSelected = false), () => Builds.Any(x => x.IsSelected));
+            ClearLoadedBuildsCommand = new DelegateCommand(() => { Builds.Clear(); });
             BrowseImportFileCommand = new DelegateCommand(ExecuteBrowseImportFileCommand);
             Builds = new ObservableCollection<BuildViewModel>();
             SelectedLevelType = LevelType.QuickPlay;
+            ListenToNotifications = true;
         }
 
         private void UpdateBuildsCalculations()
@@ -145,7 +204,7 @@ namespace MwoCWDropDeckBuilder.ViewModel
             bool fileSourceValid = (!UseFileAsSource) || IsValid(() => ImportFilePath);
             
             bool smurfyMechBayValid = (!UseSmurfyMechBayAsSource) || IsValid(() => SmurfyApiKey);
-            
+
             return fileSourceValid && smurfyMechBayValid;
         }
 
@@ -153,7 +212,7 @@ namespace MwoCWDropDeckBuilder.ViewModel
         {
             Helper.InvokeForUI(() =>
             {
-                RaiseBusyMessage(true, "Loading builds from text file and Smurfy...");
+                RaiseBusyMessage(true, "Loading builds from text file, Smurfy and MetaMechs...");
             });
 
             var tasks = new List<Task>();
@@ -161,6 +220,8 @@ namespace MwoCWDropDeckBuilder.ViewModel
                 tasks.Add(_smurfyDataLoaderService.LoadBuildsFromFileSourceAsync(ImportFilePath));
             if (UseSmurfyMechBayAsSource)
                 tasks.Add(_smurfyDataLoaderService.LoadBuildsFromSmurfyMechBayAsync(SmurfyApiKey));
+            if (UseMetaMechsMetaTierListAsSource)
+                tasks.Add(_smurfyDataLoaderService.LoadBuildsFromMetaMechsMetaTierListAsync(SelectedMetaMechsMetaTier));
 
             Task.WhenAll(tasks).ContinueWith((taskResult) =>
             {

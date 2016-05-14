@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using MwoCWDropDeckBuilder.Infrastructure;
 using MwoCWDropDeckBuilder.Model;
 
 namespace MwoCWDropDeckBuilder.ViewModel.Filters

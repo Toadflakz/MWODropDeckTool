@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using MwoCWDropDeckBuilder.Infrastructure;
 using MwoCWDropDeckBuilder.Model;
 
 namespace MwoCWDropDeckBuilder.ViewModel.Filters

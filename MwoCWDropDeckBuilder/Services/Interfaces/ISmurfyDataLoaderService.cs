@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace MwoCWDropDeckBuilder.Services.Interfaces
 {
@@ -9,6 +8,8 @@ namespace MwoCWDropDeckBuilder.Services.Interfaces
         Task<bool> LoadBuildsFromFileSourceAsync(string path);
 
         Task<bool> LoadBuildsFromSmurfyMechBayAsync(string smurfyApiKey);
+
+        Task<bool> LoadBuildsFromMetaMechsMetaTierListAsync(MetaMechsMetaTier metaMechsMetaTier);
 
         List<SmurfyBuild> GetBuilds();
 

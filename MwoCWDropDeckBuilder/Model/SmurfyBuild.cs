@@ -65,7 +65,7 @@ namespace MwoCWDropDeckBuilder
             var firepower = Weapons.Select(x => x.Count*x.Weapon.Damage).Sum();
             Firepower = firepower;
 
-            var effectiveRange = Weapons.Min(x => x.Weapon.LongRange * GetRangeQuirk(x.Weapon, Mech.Quirks));
+            var effectiveRange = Weapons.Where(x => x.Weapon.Name != "FLAMER").Min(x => x.Weapon.LongRange * GetRangeQuirk(x.Weapon, Mech.Quirks));
             EffectiveRange = effectiveRange;
 
             var externalHeatsinks = Heatsinks - InternalHeatsinks;

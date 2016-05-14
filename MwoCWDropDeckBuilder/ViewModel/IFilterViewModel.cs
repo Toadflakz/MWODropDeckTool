@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using MwoCWDropDeckBuilder.Infrastructure;
+﻿using System.Collections.Generic;
 using MwoCWDropDeckBuilder.Infrastructure.Interfaces;
-using MwoCWDropDeckBuilder.Model;
 
 namespace MwoCWDropDeckBuilder.ViewModel
 {

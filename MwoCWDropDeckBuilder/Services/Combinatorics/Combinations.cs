@@ -1,14 +1,8 @@
 // Copyright 2008 Adrian Akison
 // Distributed under license terms of CPOL http://www.codeproject.com/info/cpol10.aspx
-using System;
-using System.Collections.Concurrent;
+
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using log4net;
-using MwoCWDropDeckBuilder.Infrastructure;
 
 namespace Facet.Combinatorics {
     /// <summary>

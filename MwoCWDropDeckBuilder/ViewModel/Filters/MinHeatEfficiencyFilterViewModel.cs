@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json.Serialization;
 
 namespace MwoCWDropDeckBuilder.ViewModel.Filters
 {

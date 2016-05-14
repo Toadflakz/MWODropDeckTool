@@ -159,54 +159,89 @@
                                               SearchAutoFilterVisibility="Visible"
                                               ShowSortOrder="True">
             <extendedGridControl:ExtendedDataGrid.Columns>
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding Tonnage}"
-                                                           Header="Tonnage"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Header="Tonnage" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding AverageSusDps,
                                                                              StringFormat=N2}"
-                                                           Header="Avg. Sus. DPS"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Header="Avg. Sus. DPS" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding DeltaSusDps,
+                                                                             StringFormat=N2}"
+                                                           Header="Δ Sus. DPS" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding AverageMaxDps,
                                                                              StringFormat=N2}"
-                                                           Header="Avg. Max. DPS"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Header="Avg. Max. DPS" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding DeltaMaxDps,
+                                                                             StringFormat=N2}"
+                                                           Header="Δ Max. DPS" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding TotalFirepower,
+                                                                             StringFormat=N0}"
+                                                           Header="Total Firepower" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding AverageFirepower,
                                                                              StringFormat=N0}"
-                                                           Header="Avg. Firepower"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                                                           Header="Avg. Firepower" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding DeltaFirepower,
+                                                                             StringFormat=N0}"
+                                                           Header="Δ Firepower" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding AverageHeatEfficiency,
                                                                              StringFormat=P0}"
-                                                           Header="Avg. Heat Eff."
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                                                           Header="Avg. Heat Eff." />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding DeltaHeatEfficiency,
+                                                                             StringFormat=P0}"
+                                                           Header="Δ Heat Eff." />
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
-                                                           Binding="{Binding AverageRange,
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding AverageRangeExclLights,
                                                                              StringFormat=N0}"
-                                                           Header="Avg. Eff. Range"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                                                           Header="Avg. Eff. Range (excl. Lights)" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding DeltaRangeExclLights,
+                                                                             StringFormat=N0}"
+                                                           Header="Δ Eff. Range (excl. Lights)" />
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding AverageSpeed,
                                                                              StringFormat=N0}"
-                                                           Header="Avg. Speed"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                                                           Header="Avg. Speed" />
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
+                                                           Binding="{Binding DeltaSpeedExclLights,
+                                                                             StringFormat=N0}"
+                                                           Header="Δ Speed (excl. Lights)" />
 
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding ECMChassis,
                                                                              StringFormat=N0}"
-                                                           Header="ECM"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                                                           Header="ECM" />
 
-                <extendedColumn:ExtendedDataGridTextColumn AllowAutoFilter="True"
+                <extendedColumn:ExtendedDataGridTextColumn d:DataContext="{d:DesignInstance model:DropDeck}"
+                                                           AllowAutoFilter="True"
                                                            Binding="{Binding MechSummary}"
-                                                           Header="Summary of Mechs"
-                                                           d:DataContext="{d:DesignInstance model:DropDeck}" />
+                                                           Header="Summary of Mechs" />
             </extendedGridControl:ExtendedDataGrid.Columns>
             <extendedGridControl:ExtendedDataGrid.RowDetailsTemplate>
                 <DataTemplate>
@@ -227,25 +262,25 @@
                                             <ColumnDefinition Width="4*" />
                                         </Grid.ColumnDefinitions>
                                         <Label Grid.Column="0"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}"
                                                Content="{Binding MechName}"
-                                               Foreground="White"
-                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                               Foreground="White" />
                                         <Label Grid.Column="1"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}"
                                                Content="{Binding WeaponSummary}"
-                                               Foreground="White"
-                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                               Foreground="White" />
                                         <Label Grid.Column="2"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}"
                                                Content="{Binding Mech.Type}"
-                                               Foreground="White"
-                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                               Foreground="White" />
                                         <Label Grid.Column="3"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}"
                                                Content="{Binding MechTonnage}"
-                                               Foreground="White"
-                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                               Foreground="White" />
                                         <Label Grid.Column="4"
+                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}"
                                                Content="{Binding Url}"
-                                               Foreground="White"
-                                               d:DataContext="{d:DesignInstance mwoCwDropDeckBuilder:SmurfyBuild}" />
+                                               Foreground="White" />
                                     </Grid>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

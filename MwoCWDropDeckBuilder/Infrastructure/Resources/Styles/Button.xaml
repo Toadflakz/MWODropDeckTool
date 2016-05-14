@@ -7,6 +7,12 @@
         <Setter Property="BorderBrush" Value="{StaticResource LightBlueBorderBrush}" />
         <Setter Property="Foreground" Value="{StaticResource LightBlueBorderBrush}" />
         <Setter Property="Background" Value="{StaticResource BackgroundAltDarkGreyBrush}" />
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="LightGray" />
+                <Setter Property="Background" Value="{StaticResource BackgroundAltDarkGreyBrush}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 </ResourceDictionary>
